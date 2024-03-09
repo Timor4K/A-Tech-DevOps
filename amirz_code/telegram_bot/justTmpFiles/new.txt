@@ -1,0 +1,42 @@
+import boto3
+import os
+
+# Upload a file object to the bucket
+s3_uploader = boto3.client('s3')
+s3_uploader.upload_file('uploads/myimg.jpg','amirz-bucket','myimg-s3.jpg')
+
+# List all objects in the bucket
+my_s3_rsrc = boto3.resource('s3')
+my_bucket = my_s3_rsrc.Bucket('amirz-bucket')
+
+# Use my_bucket.objects.filter(Prefix="DIR_NAME")
+for file in my_bucket.objects.all():
+    print(f"Bucket: {my_bucket.name} Key: {file.key}")
+
+# Use this code to list all buckets
+#for bucket in my_s3_rsrc.buckets.all():
+#    my_bucket = my_s3_rsrc.Bucket(bucket.name)
+#    for file in my_bucket.objects.all():
+#        print(f"Bucket: {bucket.name} Key: {file.key}")
+
+# Local directory to download files
+local_directory = 'downloads'
+
+# List objects in the S3 bucket
+objects = s3.list_objects(Bucket=bucket_name, Prefix=prefix)['Contents']
+
+# Create the local directory if it doesn't exist
+if not os.path.exists(local_directory):
+    os.makedirs(local_directory)
+
+# Download each file
+for obj in objects:
+    key = obj['Key']
+    local_file_path = os.path.join(local_directory, os.path.basename(key))
+
+    print(f"Downloading {key} to {local_file_path}")
+
+    # Download the file
+    s3.download_file(bucket_name, key, local_file_path)
+
+print("Download complete!")
